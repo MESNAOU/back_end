@@ -112,18 +112,6 @@ public class AdministrateurController {
     }
     
     /*=========================================Streams=========================*/
-    @GetMapping("/{id}/streams")
-    public ResponseEntity<List<LiveDTO>> getLivesByAdmin(@PathVariable int id){
-		try {
-			List<LiveDTO> list_lives = this.liveService.getAllByAdmin(id);
-			if (list_lives.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-			return ResponseEntity.status(HttpStatus.OK).body(list_lives);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-		}
-    }
-   
     // update a live
     @PutMapping("/{idadmin}/streams/{idlive}")
 
