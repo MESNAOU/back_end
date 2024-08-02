@@ -27,6 +27,11 @@ public class Live {
     @Column(name = "Lien_Youtube",columnDefinition = "TEXT",nullable = false)
 
     private String lienYoutube;
+    
+    @Lob
+    @Column(name = "Image_Data")
+    private byte[] imageData;
+    
     private boolean active=false;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,10 +56,10 @@ public class Live {
 
     @JoinColumn(name = "id_thematique")
     @JsonProperty("thématique")
-
-
     private Theme thematique;
 
+    @OneToMany(mappedBy = "live")
+    private List<LiveFeedback> feedbacks;
 
     public Live(){
 
@@ -147,4 +152,16 @@ public class Live {
     public void setActive(boolean active) {
         this.active = active;
     }
+	public byte[] getImageData() {
+		return imageData;
+	}
+	public void setImageData(byte[] imageData) {
+		this.imageData = imageData;
+	}
+	public List<LiveFeedback> getFeedbacks() {
+		return feedbacks;
+	}
+	public void setFeedbacks(List<LiveFeedback> feedbacks) {
+		this.feedbacks = feedbacks;
+	}
 }

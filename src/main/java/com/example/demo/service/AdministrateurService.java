@@ -27,8 +27,7 @@ public class AdministrateurService {
         return this.administrateurRepository.findById(id);
     }
     public void createOne(Administrateur ad){
-    	InfoUser infoUser = infoUserRepository.findById(ad.getInfoUser().getId())
-                .orElseGet(() -> infoUserRepository.save(ad.getInfoUser()));
+    	InfoUser infoUser = infoUserRepository.save(ad.getInfoUser());
 
         ad.setInfoUser(infoUser);
         administrateurRepository.save(ad);

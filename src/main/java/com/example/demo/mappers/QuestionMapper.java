@@ -1,9 +1,7 @@
 package com.example.demo.mappers;
 
 import com.example.demo.dto.QuestionDTO;
-import com.example.demo.dto.ThemeDTO;
 import com.example.demo.entities.Question;
-import com.example.demo.entities.Theme;
 
 import org.springframework.stereotype.Service;
 

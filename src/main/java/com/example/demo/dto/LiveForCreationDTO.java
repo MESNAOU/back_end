@@ -1,16 +1,8 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.example.demo.entities.Administrateur;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public class LiveForCreationDTO {
@@ -22,10 +14,11 @@ public class LiveForCreationDTO {
     private String lienYoutube;
     private ThemeDTO thematique;
     private ResponsableDTO responsable;
+    private MultipartFile file;
     
     
 	public LiveForCreationDTO(int id, String subject, LocalDateTime date, String lienStreamYard, String lienYoutube,
-			ThemeDTO thematique, ResponsableDTO responsable) {
+			ThemeDTO thematique, ResponsableDTO responsable, MultipartFile file) {
 		super();
 		this.id = id;
 		this.subject = subject;
@@ -34,6 +27,7 @@ public class LiveForCreationDTO {
 		this.lienYoutube = lienYoutube;
 		this.thematique = thematique;
 		this.responsable = responsable;
+		this.file = file;
 	}
 	public LiveForCreationDTO() {
 		
@@ -80,13 +74,16 @@ public class LiveForCreationDTO {
 	public void setResponsable(ResponsableDTO responsable) {
 		this.responsable = responsable;
 	}
+	public MultipartFile getFile() {
+		return file;
+	}
+	public void setFile(MultipartFile file) {
+		this.file = file;
+	}
 	@Override
 	public String toString() {
-		return "LiveDTOForCreation [id=" + id + ", subject=" + subject + ", date=" + date + ", lienStreamYard="
+		return "LiveForCreationDTO [id=" + id + ", subject=" + subject + ", date=" + date + ", lienStreamYard="
 				+ lienStreamYard + ", lienYoutube=" + lienYoutube + ", thematique=" + thematique + ", responsable="
-				+ responsable.getRole() + "]";
-	}
-
-    
-    
+				+ responsable + ", file=" + file + "]";
+	}  
 }

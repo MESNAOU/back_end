@@ -1,9 +1,5 @@
 package com.example.demo.dto;
 
-import java.util.List;
-
-import com.example.demo.entities.Jeune;
-
 public class ThemeDTO {
     private int id;
     private String contenu;

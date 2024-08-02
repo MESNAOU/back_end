@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,22 +113,10 @@ public class AdministrateurController {
     }
     
     /*=========================================Streams=========================*/
-    @GetMapping("/{id}/streams")
-    public ResponseEntity<List<LiveDTO>> getLivesByAdmin(@PathVariable int id){
-		try {
-			List<LiveDTO> list_lives = this.liveService.getAllByAdmin(id);
-			if (list_lives.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-			return ResponseEntity.status(HttpStatus.OK).body(list_lives);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-		}
-    }
-   
     // update a live
     @PutMapping("/{idadmin}/streams/{idlive}")
 
-    public ResponseEntity<LiveDTO> UpdateLIve (@RequestBody LiveDTO L,@PathVariable("idadmin") Long id,@PathVariable("idlive") int id2) throws ResponsableNotFoundException{
+    public ResponseEntity<LiveDTO> UpdateLive (@RequestBody LiveDTO L,@PathVariable("idadmin") Long id,@PathVariable("idlive") int id2) throws ResponsableNotFoundException{
     	try {
     		L.setId(id2);
     		this.liveService.updateLive(L,id,id2);

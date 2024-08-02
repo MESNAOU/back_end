@@ -1,7 +1,9 @@
 package com.example.demo.service;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.Exception.AdministrateurNotFoundException;
 import com.example.demo.Exception.LiveNotFoundException;
 import com.example.demo.Exception.ResponsableNotFoundException;
-import com.example.demo.IES.Mailer.MailSending;
+import com.example.demo.Mailer.MailSending;
+import com.example.demo.Mailer.PdfGenerator;
 import com.example.demo.dto.LiveDTO;
 import com.example.demo.dto.LiveForCreationDTO;
 import com.example.demo.entities.Administrateur;
@@ -60,7 +63,8 @@ public class LiveService {
     ProfessionnelRepository professionelRepository;
     @Autowired
     AdministrateurRepository administrateurRepository;
-
+    @Autowired
+    private PdfGenerator pdfGenerator;
 
 
     public List<LiveDTO> getAllLives(){
@@ -112,6 +116,7 @@ public class LiveService {
     }
 
     // to active / desactive a live
+    /*
     public void activatdes(int id){
         Live l=this.liveRepository.findById(id).get();
         if(l.isActive()){
@@ -120,17 +125,62 @@ public class LiveService {
         else{
             System.out.println(("you will receive the informations"));
             l.setActive(true);
-                this.sender.setReceiver(l.getResponsable().getInfoUser().getMail());
-                this.sender.setSub("test");
-                String body="GET YOUR JOB THEMATIC"+l.getThematiques().getContenu()+"FOR SUBJECT"+l.getSubject()+"for the link"+l.getLienYoutube();
-                this.sender.setSub("test");
-                this.sender.setBody(body);
-                Thread Thread=new Thread(this.sender);
-                Thread.start();
+            this.sender.setReceiver(l.getResponsable().getInfoUser().getMail());
+            this.sender.setSubject("test");
+            String body="GET YOUR JOB THEMATIC"+l.getThematiques().getContenu()+"FOR SUBJECT"+l.getSubject()+"for the link"+l.getLienYoutube();
+            this.sender.setBody(body);
+            Thread Thread=new Thread(this.sender);
+            Thread.start();
 
         }
         this.liveRepository.save(l);
     }
+    */
+    public void activatdes(int id){
+        Live l=this.liveRepository.findById(id).get();
+        if(l.isActive()){
+            l.setActive(false);
+        }
+        else{
+            System.out.println(("you will receive the informations"));
+            l.setActive(true);
+            this.sender.setReceiver(l.getResponsable().getInfoUser().getMail());
+            this.sender.setSubject("Nouveau live assigné");
+            String thematiqueContenu = l.getThematiques().getContenu();
+            LocalDateTime liveDate = l.getDate(); 
+            String formattedDate = liveDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy à HH:mm"));
+            String body = String.format(
+            		"Bonjour,\n\n" +
+                    "Vous êtes responsable de l'organisation du live sur la thématique : %s prévu pour le %s.\n\n" +
+                    "Veuillez consulter le PDF ci-joint pour toutes les informations concernant le live, y compris le lien Streamyard qui vous redirigera vers la plateforme où vous organiserez votre live.\n\n" +
+                    "Il est également important de vérifier votre espace sur la plateforme IES trois jours avant la date prévue du live. Vous y trouverez les questions des jeunes concernant cette thématique.\n\n" +
+                    "Cordialement,\n" +
+                    "L'équipe d'organisation",
+                    thematiqueContenu,
+                    formattedDate
+            );
+            this.sender.setBody(body);
+            // Generate PDF content
+            try {
+                byte[] pdfContent = this.pdfGenerator.generatePdf(
+                    l.getSubject(),
+                    thematiqueContenu,
+                    formattedDate,
+                    l.getLienStreamYard(),
+                    l.getLienYoutube()
+                );
+                this.sender.setPdfContent(pdfContent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            this.sender.setPdfTitle(l.getSubject());
+            Thread Thread=new Thread(this.sender);
+            Thread.start();
+
+        }
+        this.liveRepository.save(l);
+    }
+
     // animated by doctor or infrimrie
     public List<LiveDTO> getAllAnimated(Long id){
         List<Live> L=this.liveRepository.findByResponsableId(id);
@@ -169,10 +219,7 @@ public class LiveService {
         List<LiveDTO> L1=this.getongoing(id);
         List<LiveDTO> L2=new ArrayList<>();
         for(int i=0;i<L1.size();i++){
-            if(L1.get(i).getActive()){
-
-            }
-            else{
+            if(!L1.get(i).getActive()){
                 L2.add(L1.get(i));
             }
         }
@@ -212,7 +259,7 @@ public class LiveService {
         for(int i=0;i<L1.size();i++){
             long daysBetween = ChronoUnit.DAYS.between(D, L1.get(i).getDate());
 
-            if(daysBetween>3&&daysBetween<25){
+            if(daysBetween>3 && daysBetween<=28){
                 Sending.add(L1.get(i));
             }
         }
@@ -229,7 +276,7 @@ public class LiveService {
             long daysBetween = ChronoUnit.DAYS.between(D, L1.get(i).getDate().toLocalDate());
 
             System.out.println(daysBetween);
-            if(daysBetween>3&&daysBetween<25){
+            if(daysBetween>3&&daysBetween<=28){
                 Sending.add(L1.get(i));
             }
         }
@@ -285,13 +332,7 @@ public class LiveService {
 
             if(L.get(i).getActive()==false) {
                 if (daysBetween == 45) {
-                    L.get(i).setActive(true);
-                    this.sender.setReceiver("hamza.elmalki1234@gmail.com");
-                    this.sender.setSub("test");
-                    String body="GET YOUR JOB THEMATIC"+L.get(i).getThematique().getContenu()+"FOR SUBJECT"+L.get(i).getSubject()+"for the link"+L.get(i).getLienYoutube();
-                    this.sender.setBody(body);
-                    Thread Thread=new Thread(this.sender);
-                    Thread.start();
+                    this.activatdes(L.get(i).getId());
                 }
             }
         }
@@ -304,7 +345,7 @@ public class LiveService {
     }
     
     @Transactional
-    public void createLive(LiveForCreationDTO liveRequest, Long adminId) throws ResponsableNotFoundException, AdministrateurNotFoundException{
+    public void createLive(LiveForCreationDTO liveRequest, Long adminId) throws ResponsableNotFoundException, AdministrateurNotFoundException, IOException{
     	Responsable responsable;
     	String role = liveRequest.getResponsable().getRole();
     	Long responsableId = liveRequest.getResponsable().getId();
@@ -331,17 +372,9 @@ public class LiveService {
             live.setThematiques(P2);
         }
 
-        if(daysBetween<45){
-
-        	live.setActive(true);
-            this.sender.setReceiver(live.getResponsable().getInfoUser().getMail());
-            this.sender.setSub("LIVE AFFECTATION TITLED : "+liveRequest.getSubject());
-            String body="GET YOUR JOB THEMATIC "+live.getThematiques().getContenu()+" FOR SUBJECT "+liveRequest.getSubject()+" for the link "+liveRequest.getLienYoutube();
-            this.sender.setBody(body);
-            Thread Thread=new Thread(this.sender);
-            Thread.start();
-        }
         this.liveRepository.save(live);
+        if(daysBetween<45)
+        	this.activatdes(live.getId());
     }
     public void updateLive(LiveDTO L,Long adminId,int liveId) throws ResponsableNotFoundException, LiveNotFoundException{
     	Live existingLive = liveRepository.findById(liveId)
@@ -369,4 +402,14 @@ public class LiveService {
     			.orElseThrow(() -> new LiveNotFoundException("Le live d'id "+id+" est introuvable."));
         this.liveRepository.deleteById(id);
     }
+
+	public LiveDTO getLastLive() {
+		Optional<Live> lastLiveOptional = this.liveRepository.findLastLiveBefore(LocalDateTime.now());
+		
+		if (lastLiveOptional.isPresent()) {
+            return this.mapperLive.liveToDTOLive(lastLiveOptional.get());
+        } else {
+            return null; 
+        }
+	}
 }

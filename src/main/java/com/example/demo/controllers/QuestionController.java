@@ -3,12 +3,9 @@ package com.example.demo.controllers;
 import com.example.demo.entities.Live;
 import com.example.demo.entities.Question;
 import com.example.demo.repositories.LiveRepository;
-import com.example.demo.service.LiveService;
 import com.example.demo.service.QuestionService;
 import com.example.demo.Exception.LiveNotFoundException;
-import com.example.demo.dto.LiveDTO;
 import com.example.demo.dto.QuestionDTO;
-import com.example.demo.dto.ThemeDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class QuestionController {
@@ -36,6 +32,7 @@ public class QuestionController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
     }
+    /*
     @PostMapping("/streams/{id}/questions")
     public ResponseEntity<String> createOne(@RequestBody Question Q, @PathVariable int id) {
         try {
@@ -49,5 +46,10 @@ public class QuestionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating Question");
         }
     }
-
+    */
+    @PostMapping("/process")
+    public ResponseEntity<String> processQuestions(@RequestBody List<String> questions) {
+        String summary = service.processQuestions(questions);
+        return ResponseEntity.ok(summary);
+    }
 }

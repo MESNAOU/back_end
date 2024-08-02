@@ -1,11 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.Exception.AdministrateurNotFoundException;
 import com.example.demo.Exception.ThemeNotFoundException;
-import com.example.demo.dto.AdministrateurDTO;
 import com.example.demo.dto.ThemeDTO;
-import com.example.demo.entities.Administrateur;
-import com.example.demo.entities.Theme;
 import com.example.demo.service.ThemeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/themes")
 public class ThemeController {
     @Autowired

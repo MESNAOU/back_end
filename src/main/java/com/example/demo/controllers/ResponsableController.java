@@ -7,15 +7,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.LiveDTO;
 import com.example.demo.dto.ResponsableDTO;
-import com.example.demo.entities.Administrateur;
-import com.example.demo.entities.Responsable;
 import com.example.demo.service.LiveService;
 import com.example.demo.service.ResponsableService;
 
 import jakarta.websocket.server.PathParam;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/responsables")
@@ -31,9 +28,9 @@ public class ResponsableController {
         return this.Server.getAll();
     }*/
     @GetMapping
-    public ResponseEntity<List<ResponsableDTO>> getAlMedecins() {
-        List<ResponsableDTO> medecins = this.service.getAll();
-        return ResponseEntity.ok(medecins);
+    public ResponseEntity<List<ResponsableDTO>> getAllResponsables() {
+        List<ResponsableDTO> responsables = this.service.getAll();
+        return ResponseEntity.ok(responsables);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ResponsableDTO> getone(@PathVariable Long id){

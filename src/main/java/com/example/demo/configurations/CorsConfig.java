@@ -1,6 +1,5 @@
 package com.example.demo.configurations;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +10,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig {
 
     @Value("${cors.allowed.origins}")
-    private String allowedOrigins;
+    private String[] allowedOrigins;
 
     @Value("${cors.allowed.methods}")
-    private String allowedMethods;
+    private String[] allowedMethods;
 
     @Value("${cors.allowed.headers}")
-    private String allowedHeaders;
+    private String[] allowedHeaders;
 
     @Value("${cors.allow.credentials}")
     private boolean allowCredentials;
@@ -36,4 +35,3 @@ public class CorsConfig {
         };
     }
 }
-

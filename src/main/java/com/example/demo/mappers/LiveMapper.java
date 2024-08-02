@@ -2,6 +2,7 @@ package com.example.demo.mappers;
 
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,7 +156,7 @@ public class LiveMapper {
         return live;
     }
     */
-    public  Live  dtoLiveForCreationToLive(LiveForCreationDTO liveRequest, Responsable responsable, Administrateur admin){
+    public  Live  dtoLiveForCreationToLive(LiveForCreationDTO liveRequest, Responsable responsable, Administrateur admin) throws IOException{
         Live live = new Live();
         //Responsable R=new Responsable();
         //ProfessionnelSante P=new ProfessionnelSante();
@@ -164,6 +165,7 @@ public class LiveMapper {
         live.setDate(liveRequest.getDate());
         live.setLienStreamYard(liveRequest.getLienStreamYard());
         live.setLienYoutube(liveRequest.getLienYoutube());
+        live.setImageData(liveRequest.getFile().getBytes());
         live.setAdmin(admin);
         live.setThematiques(mapperTheme.Iversing(liveRequest.getThematique()));
         // Associez le responsable à la live

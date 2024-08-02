@@ -1,10 +1,6 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.example.demo.entities.Administrateur;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
